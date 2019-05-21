@@ -1,7 +1,8 @@
 # SharpNet
 Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation
+Link to the paper: [arXiv](https://arxiv.org/)
 
-## Installation
+### Installation
 
 Make sure you have installed the following requirements:
 
@@ -19,7 +20,7 @@ mkdir models && cd models
 wget https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK
 ```
 
-##Demo
+## Demo
 
 Try the [demo.py](https://github.com/MichaelRamamonjisoa/SharpNet/blob/master/demo.py) 
 script to test our network on your image :
@@ -35,18 +36,18 @@ python3 demo.py --image $YOURIMAGEPATH \
 --scale $SCALEFACTOR 
 ```
 
-The network was trained using ***640x480 images***, therefore better results might be 
+The network was trained using 640x480 images, therefore better results might be 
 observed after rescaling the image with $SCALEFACTOR different than 1. 
 
-##Training
+## Training
 
 TODO
 
-##Evaluation
+## Evaluation
 
 TODO
 
-##Citation
+## Citation
 
 If you find SharpNet useful in your research, please consider citing:
 ```
