@@ -1,6 +1,7 @@
 # SharpNet
 Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation
-Link to the paper: [arXiv](https://arxiv.org/)
+
+Link to the paper: [arXiv](https://arxiv.org/abs/1905.08598)
 
 ### Installation
 
@@ -54,7 +55,7 @@ If you find SharpNet useful in your research, please consider citing:
 @article{ramamonjisoa2019sharpnet,
     Title = {SharpNet: Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation},
     Author = {Michael Ramamonjisoa and Vincent Lepetit},
-    Journal = {arXiv preprint arXiv:TODO},
+    Journal = {arXiv preprint arXiv:1905.08598},
     Year = {2019}
 }
 ```
