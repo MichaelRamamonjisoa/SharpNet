@@ -12,14 +12,15 @@ Make sure you have installed the following requirements:
 - OpenCV
 - numpy, scipy, Pillow, matplotlib
 
-Clone the repository and download the trained weights:
+Clone the repository and download the [trained weights](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK):
 
 ```
 git clone https://github.com/MichaelRamamonjisoa/SharpNet.git
 cd SharpNet
 mkdir models && cd models
-wget https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK
 ```
+
+Put the trained weights in the models/ directory.
 
 ## Demo
 
