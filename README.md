@@ -5,7 +5,7 @@ by Michaël Ramamonjisoa and Vincent Lepetit.
 Link to the paper: [arXiv](https://arxiv.org/abs/1905.08598)
 
 <p align="center">
-  <img src="architecture2.pdf" width="800"/>
+  <img src="architecture.png" width="800"/>
 </p>
 
 ### Installation
