@@ -12,7 +12,7 @@ from scipy.misc import imsave, imread
 parser = argparse.ArgumentParser(description="Test a model on an image")
 parser.add_argument('--image', '-i', dest='image_path', help="The input image", default=None)
 parser.add_argument('--model', '-m', dest='model_path', help="checkpoint.pth to load as model")
-arser.add_argument('--outpath', dest='outpath', default=None, help="Output directory where predictions will be saved")
+parser.add_argument('--outpath', dest='outpath', default=None, help="Output directory where predictions will be saved")
 parser.add_argument('--scale', dest='rescale_factor', default=1.0, type=float, help='Rescale factor (multiplicative)')
 parser.add_argument('--cuda', dest='cuda_device', default='', help="To activate inference on GPU, set to GPU_ID")
 parser.add_argument('--nocuda', action='store_true', help='Activate to disable GPU usage')
