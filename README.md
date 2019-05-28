@@ -1,7 +1,12 @@
 # SharpNet
-Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation
+*Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation*, 
+by Michaël Ramamonjisoa and Vincent Lepetit.
 
 Link to the paper: [arXiv](https://arxiv.org/abs/1905.08598)
+
+<p align="center">
+  <img src="architecture.png" width="800"/>
+</p>
 
 ### Installation
 
@@ -43,7 +48,10 @@ observed after rescaling the image with $SCALEFACTOR different than 1.
 
 ## Training
 
-TODO
+The PBRS dataset is currently offline due to instructions of SUNCG author (see 
+[this](https://github.com/yindaz/pbrs/issues/11) and [this](https://github.com/shurans/SUNCGtoolbox/issues/32)). 
+Therefore reproduction of our training procedure cannot be done properly. However we will provide code for loss
+computation, finetuning on the NYUv2 Depth dataset as well as our pretrained weights on the PBRS dataset only.
 
 ## Evaluation
 
