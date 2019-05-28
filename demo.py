@@ -148,18 +148,20 @@ if args.normals:
         plt.imshow(normals_pred.astype('uint8'))
     if args.outpath is not None:
         imsave(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_normals.png'),
-               normals_pred)
+               normals_pred.astype('uint8'))
 
 if args.depth:
     depth_pred = depth_pred.data.cpu().numpy()[0, 0, ...] * 65535 / 1000
-    depth_pred = scale * cv2.resize(depth_pred, dsize=(image_original.size[0], image_original.size[1]),
+    depth_pred = (1/scale) * cv2.resize(depth_pred, dsize=(image_original.size[0], image_original.size[1]),
                                     interpolation=cv2.INTER_LINEAR)
     if args.display:
         plt.subplot(2, 2, 4)
         plt.imshow(depth_pred)
         plt.set_cmap('jet')
     if args.outpath is not None:
-        imsave(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_depth.png'), depth_pred)
+        depth_pred = (depth_pred*10000).astype(np.uint16)
+        cv2.imwrite(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_depth.png'),
+                    depth_pred.astype(np.uint16))
 
 if args.boundary:
     boundary_pred = boundary_pred.data.cpu().numpy()[0, 0, ...]
@@ -173,7 +175,7 @@ if args.boundary:
         plt.set_cmap('gray')
     if args.outpath is not None:
         imsave(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_boundary.png'),
-               boundary_pred)
+               (boundary_pred*255).astype('uint8'))
 
 if args.display:
     plt.subplot(2, 2, 1)
