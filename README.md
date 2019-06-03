@@ -46,6 +46,9 @@ python3 demo.py --image $YOURIMAGEPATH \
 The network was trained using 640x480 images, therefore better results might be 
 observed after rescaling the image with $SCALEFACTOR different than 1. 
 
+Here is what you can get on your test image:
+![alt_text](https://github.com/MichaelRamamonjisoa/MichaelRamamonjisoa.github.io/blob/master/images/SharpNet_thumbnail.gif)
+
 ## Training
 
 The PBRS dataset is currently offline due to instructions of SUNCG author (see 
