@@ -7,7 +7,7 @@ from sharpnet_model import *
 from PIL import Image
 from data_transforms import *
 import os, sys
-from scipy.misc import imsave, imread
+from imageio import imread, imwrite
 
 parser = argparse.ArgumentParser(description="Test a model on an image")
 parser.add_argument('--image', '-i', dest='image_path', help="The input image", default=None)
@@ -147,8 +147,8 @@ if args.normals:
         plt.subplot(2, 2, 2)
         plt.imshow(normals_pred.astype('uint8'))
     if args.outpath is not None:
-        imsave(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_normals.png'),
-               normals_pred.astype('uint8'))
+        imwrite(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_normals.png'),
+                normals_pred.astype('uint8'))
 
 if args.depth:
     depth_pred = depth_pred.data.cpu().numpy()[0, 0, ...] * 65535 / 1000
@@ -174,8 +174,8 @@ if args.boundary:
         plt.imshow(boundary_pred)
         plt.set_cmap('gray')
     if args.outpath is not None:
-        imsave(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_boundary.png'),
-               (boundary_pred*255).astype('uint8'))
+        imwrite(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_boundary.png'),
+                (boundary_pred*255).astype('uint8'))
 
 if args.display:
     plt.subplot(2, 2, 1)

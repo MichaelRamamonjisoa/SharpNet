@@ -15,7 +15,7 @@ Make sure you have installed the following requirements:
 - Python3
 - [Pytorch](https://pytorch.org/get-started/locally/)
 - OpenCV
-- numpy, scipy, Pillow, matplotlib
+- numpy, imageio, Pillow, matplotlib
 
 Clone the repository and download the [trained weights](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK):
 
