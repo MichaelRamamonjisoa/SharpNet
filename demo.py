@@ -7,7 +7,8 @@ from sharpnet_model import *
 from PIL import Image
 from data_transforms import *
 import os, sys
-from scipy.misc import imsave, imread
+from scipy.misc import imsave
+from imageio import imread
 
 parser = argparse.ArgumentParser(description="Test a model on an image")
 parser.add_argument('--image', '-i', dest='image_path', help="The input image", default=None)
