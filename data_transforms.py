@@ -1,4 +1,14 @@
+import numbers
+import random
+import time
+
 import numpy as np
+import cv2
+from PIL import Image, ImageOps
+from skimage import exposure
+from scipy.ndimage import rotate as scp_rotate
+from torchvision import transforms
+from torchvision.transforms import functional as TF
 import torch
 
 
@@ -28,6 +38,58 @@ class Normalize(object):
         else:
             # final return should be a tuple
             return tuple([image] + list(labels))
+
+
+def get_random_bbox(data, tw, th):
+    top = bottom = left = right = 0
+    w, h = data[0].data.size
+
+    if w < tw:
+        left = (tw - w) // 2
+        right = tw - w - left
+    if h < th:
+        top = (th - h) // 2
+        bottom = th - h - top
+
+    if left > 0 or right > 0 or top > 0 or bottom > 0:
+        data[0].data = pad_image('reflection', data[0].data, top, bottom, left, right)
+        for i, mode in enumerate(data[1:]):
+            data[i + 1].data = pad_image('constant', data[i + 1].data, top, bottom, left, right, value=0)
+
+    w, h = data[0].data.size
+    if w == tw and h == th:
+        # should happen after above when image is smaller than crop size
+        return (0, 0, w, h)
+
+    # crop next to objects
+    [y_mask, x_mask] = np.where(data[1].data == 1)
+
+    right_bb = np.max(x_mask)
+    left_bb = np.min(x_mask)
+    top_bb = np.min(y_mask)
+    bottom_bb = np.max(y_mask)
+
+    x_c = int(0.5 * (right_bb + left_bb))
+    y_c = int(0.5 * (bottom_bb + top_bb))
+
+    delta_x = np.max(x_mask) - np.min(x_mask)
+    delta_y = np.max(y_mask) - np.min(y_mask)
+
+    x_min = max(0, x_c - int(0.5 * (delta_x + tw)))
+    x_max = max(0, min(w - tw, x_c + int(0.5 * (delta_x - tw))))
+    y_min = max(0, y_c - int(0.5 * (delta_y + th)))
+    y_max = max(0, min(h - th, y_c + int(0.5 * (delta_y - th))))
+
+    if x_min > x_max:
+        x1 = random.randint(0, x_max)
+    else:
+        x1 = random.randint(x_min, x_max)
+    if y_min > y_max:
+        y1 = random.randint(0, y_max)
+    else:
+        y1 = random.randint(y_min, y_max)
+
+    return (x1, y1, tw, th)
 
 
 class ToTensor(object):
@@ -77,7 +139,7 @@ class ToTensor(object):
 
         return img, labels
 
-
+    
 class Compose(object):
     """Composes several transforms together.
     """
