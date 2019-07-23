@@ -39,7 +39,23 @@ class Normalize(object):
             # final return should be a tuple
             return tuple([image] + list(labels))
 
-
+        
+def pad_image(mode, image, top, bottom, left, right, value=0):
+    if mode == 'reflection':
+        if type(image) == np.ndarray:
+            return pad_reflection(np.asarray(image), top, bottom, left, right)
+        else:
+            return Image.fromarray(
+                pad_reflection(np.asarray(image), top, bottom, left, right))
+    elif mode == 'constant':
+        if type(image) == np.ndarray:
+            return pad_constant(np.asarray(image), top, bottom, left, right, value)
+        else:
+            return Image.fromarray(
+                pad_constant(np.asarray(image), top, bottom, left, right, value))
+    else:
+        raise ValueError('Unknown mode {}'.format(mode))
+        
 def get_random_bbox(data, tw, th):
     top = bottom = left = right = 0
     w, h = data[0].data.size
