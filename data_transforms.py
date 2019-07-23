@@ -40,6 +40,51 @@ class Normalize(object):
             return tuple([image] + list(labels))
 
         
+def pad_reflection(image, top, bottom, left, right):
+    if top == 0 and bottom == 0 and left == 0 and right == 0:
+        return image
+    h, w = image.shape[:2]
+    next_top = next_bottom = next_left = next_right = 0
+    if top > h - 1:
+        next_top = top - h + 1
+        top = h - 1
+    if bottom > h - 1:
+        next_bottom = bottom - h + 1
+        bottom = h - 1
+    if left > w - 1:
+        next_left = left - w + 1
+        left = w - 1
+    if right > w - 1:
+        next_right = right - w + 1
+        right = w - 1
+    new_shape = list(image.shape)
+    new_shape[0] += top + bottom
+    new_shape[1] += left + right
+    new_image = np.empty(new_shape, dtype=image.dtype)
+    new_image[top:top+h, left:left+w] = image
+    new_image[:top, left:left+w] = image[top:0:-1, :]
+    new_image[top+h:, left:left+w] = image[-1:-bottom-1:-1, :]
+    new_image[:, :left] = new_image[:, left*2:left:-1]
+    new_image[:, left+w:] = new_image[:, -right-1:-right*2-1:-1]
+    return pad_reflection(new_image, next_top, next_bottom,
+                          next_left, next_right)
+
+
+def pad_constant(image, top, bottom, left, right, value):
+    if top == 0 and bottom == 0 and left == 0 and right == 0:
+        return image
+
+    h, w = image.shape[:2]
+    new_shape = list(image.shape)
+    new_shape[0] += top + bottom
+    new_shape[1] += left + right
+    new_image = np.empty(new_shape, dtype=image.dtype)
+    new_image.fill(value)
+    new_image[top:top + h, left:left + w] = image
+
+    return new_image
+
+
 def pad_image(mode, image, top, bottom, left, right, value=0):
     if mode == 'reflection':
         if type(image) == np.ndarray:
