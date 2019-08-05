@@ -17,7 +17,12 @@ Make sure you have installed the following requirements:
 - OpenCV
 - numpy, imageio, Pillow, matplotlib
 
-Clone the repository and download the [trained weights](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK):
+Clone the repository and download the trained weights:
+- [on PBRS](https://drive.google.com/open?id=1NahBpG1AXNlWItcb9Uf9VXHmD8iSCntZ)
+- [after finetuning on NYUv2](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK)
+
+Weights trained on NYUv2 should be used for depth estimation, ***however*** weights trained on synthetic data only 
+provide sharper normals and contours predictions for normals and contours predictions.
 
 ```
 git clone https://github.com/MichaelRamamonjisoa/SharpNet.git
@@ -29,6 +34,7 @@ Put the trained weights in the models/ directory.
 
 ## Demo
 
+### On your test image
 Try the [demo.py](https://github.com/MichaelRamamonjisoa/SharpNet/blob/master/demo.py) 
 script to test our network on your image :
 
@@ -48,6 +54,16 @@ observed after rescaling the image with $SCALEFACTOR different than 1.
 
 Here is what you can get on your test image:
 ![alt_text](https://github.com/MichaelRamamonjisoa/MichaelRamamonjisoa.github.io/blob/master/images/SharpNet_thumbnail.gif)
+
+If you want to display the predictions, use the --display flag.
+
+### Live demo
+To run the live version of SharpNet, connect a camera and run demo.py with the --live flag.
+- Make sure your camera is detected by OpenCV beforehand.
+- Press 'R' on your keyboard to switch between normals, depth, contours and RGB
+- Press 'T' to save your image and its predictions
+- Press 'Q' to terminate the script
+
 
 ## Training
 
