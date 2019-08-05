@@ -21,8 +21,8 @@ Clone the repository and download the trained weights:
 - [on PBRS](https://drive.google.com/open?id=1NahBpG1AXNlWItcb9Uf9VXHmD8iSCntZ)
 - [after finetuning on NYUv2](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK)
 
-Weights trained on NYUv2 should be used for depth estimation, ***however*** weights trained on synthetic data only 
-provide sharper normals and contours predictions for normals and contours predictions.
+Weights trained on NYUv2 should be used for depth estimation, ***however*** weights trained only on synthetic data 
+provide sharper normals and contours predictions.
 
 ```
 git clone https://github.com/MichaelRamamonjisoa/SharpNet.git
