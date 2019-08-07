@@ -162,7 +162,6 @@ if args.live:
 model = SharpNet(ResBlock, [3, 4, 6, 3], [2, 2, 2, 2, 2],
                  use_normals=True if args.normals else False,
                  use_depth=True if args.depth else False,
-                 use_mask=False,
                  use_boundary=True if args.boundary else False,
                  bias_decoder=bias)
 
