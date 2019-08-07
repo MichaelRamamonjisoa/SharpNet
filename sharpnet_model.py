@@ -138,8 +138,10 @@ class Decoder(nn.Module):
 
 
 class SharpNet(nn.Module):
-    def __init__(self, block, layers_encoder, layers_decoders, use_normals=False, use_depth=False, use_lf=False,
-                 use_mask=True, use_boundary=False, bias_decoder=True):
+    def __init__(self, block, layers_encoder, layers_decoders,
+                 use_normals=False,
+                 use_depth=False,
+                 use_boundary=False, bias_decoder=True):
         super(SharpNet, self).__init__()
 
         if use_normals:
@@ -151,8 +153,6 @@ class SharpNet(nn.Module):
 
         self.use_depth = use_depth
         self.use_normals = use_normals
-        self.use_lf = use_lf
-        self.use_mask = use_mask
         self.use_boundary = use_boundary
 
         # ResNet encoder
@@ -181,15 +181,6 @@ class SharpNet(nn.Module):
             layers_decoders[0] = int(layers_decoders[0] / 3)
             layers_decoders[1] = int(layers_decoders[1] / 3)
 
-        elif self.use_lf:
-            self.lf_decoder = Decoder(self.inplanes,
-                                      in_channels=[1024, 512, 256, 64, 16],
-                                      out_channels=3,
-                                      layers_nums=layers_decoders, kernel_size=3,
-                                      bias=bias_decoder,
-                                      interpolation='bilinear',
-                                      out_activation='ReLU')
-
         if self.use_normals:
             layers_decoders[0] = int(layers_decoders[0] * 2)
             layers_decoders[1] = int(layers_decoders[1] * 2)
@@ -203,15 +194,6 @@ class SharpNet(nn.Module):
 
             layers_decoders[0] = int(layers_decoders[0] / 2)
             layers_decoders[1] = int(layers_decoders[1] / 2)
-
-        if self.use_mask:
-            self.mask_decoder = Decoder(self.inplanes,
-                                        in_channels=[1024, 512, 256, 64, 16],
-                                        out_channels=1,
-                                        layers_nums=layers_decoders, kernel_size=3,
-                                        bias=bias_decoder,
-                                        interpolation='nearest',
-                                        out_activation='Sigmoid')
 
         if self.use_boundary:
             self.boundary_decoder = Decoder(self.inplanes,
@@ -278,11 +260,6 @@ class SharpNet(nn.Module):
 
         if self.use_depth:
             x_depth = self.depth_decoder([x_img_out, x1, x2, x3, x4], x_img)
-        if self.use_lf:
-            x_lf = self.lf_decoder([x_img_out, x1, x2, x3, x4], x_img)
-
-        if self.use_mask:
-            x_mask = self.mask_decoder([x_img_out, x1, x2, x3, x4], x_img)
 
         if self.use_boundary:
             x_boundary = self.boundary_decoder([x_img_out, x1, x2, x3, x4], x_img)

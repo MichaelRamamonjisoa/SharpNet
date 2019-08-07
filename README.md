@@ -17,7 +17,16 @@ Make sure you have installed the following requirements:
 - OpenCV
 - numpy, imageio, Pillow, matplotlib
 
-Clone the repository and download the [trained weights](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK):
+Optional (for training):
+- [TensorboardX](https://github.com/lanpa/tensorboardX)
+- skimage
+
+Clone the repository and download the trained weights:
+- [on PBRS](https://drive.google.com/open?id=1NahBpG1AXNlWItcb9Uf9VXHmD8iSCntZ)
+- [after finetuning on NYUv2](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK)
+
+Weights trained on NYUv2 should be used for depth estimation, ***however*** weights trained on synthetic data only 
+provide sharper normals and contours predictions for normals and contours predictions.
 
 ```
 git clone https://github.com/MichaelRamamonjisoa/SharpNet.git
@@ -29,32 +38,75 @@ Put the trained weights in the models/ directory.
 
 ## Demo
 
+### On your test image
 Try the [demo.py](https://github.com/MichaelRamamonjisoa/SharpNet/blob/master/demo.py) 
 script to test our network on your image :
 
 ```
 python3 demo.py --image $YOURIMAGEPATH \
---cuda $CUDA_DEVICE_ID\
+--cuda CUDA_DEVICE_ID\
 --model models/final_checkpoint_NYU.pth \
 --normals \
 --depth \
 --boundary \
 --bias \
---scale $SCALEFACTOR 
+--scale SCALEFACTOR 
 ```
 
 The network was trained using 640x480 images, therefore better results might be 
-observed after rescaling the image with $SCALEFACTOR different than 1. 
+observed after rescaling the image with SCALEFACTOR different than 1. 
 
 Here is what you can get on your test image:
 ![alt_text](https://github.com/MichaelRamamonjisoa/MichaelRamamonjisoa.github.io/blob/master/images/SharpNet_thumbnail.gif)
 
-## Training
+If you want to display the predictions, use the --display flag.
 
-The PBRS dataset is currently offline due to instructions of SUNCG author (see 
+### Live demo
+To run the live version of SharpNet, connect a camera and run demo.py with the --live flag.
+- Make sure your camera is detected by OpenCV beforehand.
+- Press 'R' on your keyboard to switch between normals, depth, contours and RGB
+- Press 'T' to save your image and its predictions
+- Press 'Q' to terminate the script
+
+
+## Training
+### Pretrained weights
+The PBRS dataset is currently offline due to instructions of SUNCG authors (see 
 [this](https://github.com/yindaz/pbrs/issues/11) and [this](https://github.com/shurans/SUNCGtoolbox/issues/32)). 
-Therefore reproduction of our training procedure cannot be done properly. However we will provide code for loss
-computation, finetuning on the NYUv2 Depth dataset as well as our pretrained weights on the PBRS dataset only.
+Therefore exact reproduction of our training procedure cannot be done properly. 
+
+### Finetuning 
+For finetuning on NYUv2 Depth dataset, you will need the [dataset](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2) and split:
+
+```
+mkdir datasets
+wget -O datasets/nyuv2_splits.mat http://horatio.cs.nyu.edu/mit/silberman/indoor_seg_sup/splits.mat
+wget -O datasets/nyu_depth_v2_labeled.mat http://horatio.cs.nyu.edu/mit/silberman/nyu_depth_v2/nyu_depth_v2_labeled.mat
+```
+
+Use the following command to train the network on NYUv2:
+
+```
+python3 train_sharpnet.py --dataset NYU \
+--rootdir ../datasets/ \
+-b BATCH_SIZE --lr 8e-3 \
+--max-epoch 100 \
+--cuda CUDA_DEVICE_ID --cpu NUM_PROCESSES \
+--boundary --normals --depth \
+--lr 8e-3 --max-epoch 80 
+--pretrained-model ../models/final_checkpoint_PBRS.pth \
+--bias \
+--exp_name CUSTOM_EXPERIMENT_NAME \
+--consensus \
+--freeze normals,boundary
+```
+
+Set **BATCH_SIZE**, **NUM_PROCESSES** based on your GPU and CPU capabilities.
+A GPU is required for training (change **CUDA_DEVICE_ID** for multiple GPU usage).
+
+*Work in progress: argument parsing with configuration file.* 
+
+Please read the paper for details on parameters we used.
 
 ## Evaluation
 

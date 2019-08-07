@@ -43,7 +43,7 @@ class DoobNetLoss(nn.Module):
 
 
 class SharpNetLoss(nn.Module):
-    def __init__(self, lamb, mu, use_depth=False, use_normals=False, use_LF=False,
+    def __init__(self, lamb, mu, use_depth=False, use_normals=False,
                  use_boundary=False, use_geo_consensus=False):
         super(SharpNetLoss, self).__init__()
 
@@ -51,7 +51,6 @@ class SharpNetLoss(nn.Module):
         self.mu = mu
         self.use_normals = use_normals
         self.use_depth = use_depth
-        self.use_LF = use_LF
         self.use_boundary_loss = use_boundary
         self.use_geo_consensus = use_geo_consensus
 
@@ -62,8 +61,6 @@ class SharpNetLoss(nn.Module):
 
         if self.use_depth:
             self.masked_depth_loss = LainaBerHuLoss(use_logs=True)
-        if self.use_LF:
-            self.masked_LF_loss = HuberLoss(sigma=3)
 
         if self.use_boundary_loss:
             self.boundary_loss = DoobNetLoss(beta=4, gamma=0.5, sigma=3)
@@ -71,10 +68,6 @@ class SharpNetLoss(nn.Module):
         if self.use_geo_consensus:
             self.norm_depth_bound_consensus_loss = NormalDepthConsensusLoss()
             self.depth_bound_consensus_loss = DepthBoundaryConsensusLoss()
-
-        if self.use_mask_loss:
-            self.use_mask_loss = True
-            self.mask_loss = nn.MSELoss()
 
     def forward(self, mask_gt,
                 d_pred=None, d_gt=None,
@@ -187,7 +180,6 @@ def normals_loss(input, target, mask=None):
         else:
             n = target.numel().float()
 
-        # 900 times faster version
         prod = 1.0 - (1.0 / n) * prod.sum()
         prod = prod.clamp(min=0)
 
