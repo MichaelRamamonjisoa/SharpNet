@@ -31,7 +31,7 @@ class Normalize(object):
             # final return should be a tuple
             return tuple([image] + list(labels))
 
-        
+
 def pad_reflection(image, top, bottom, left, right):
     if top == 0 and bottom == 0 and left == 0 and right == 0:
         return image
@@ -93,7 +93,7 @@ def pad_image(mode, image, top, bottom, left, right, value=0):
     else:
         raise ValueError('Unknown mode {}'.format(mode))
 
-        
+
 def get_random_crop(data, tw, th):
     top = bottom = left = right = 0
     w, h = data[0].data.size
@@ -152,6 +152,119 @@ def get_random_crop(data, tw, th):
     return data
 
 
+def pad_reflection(image, top, bottom, left, right):
+    if top == 0 and bottom == 0 and left == 0 and right == 0:
+        return image
+    h, w = image.shape[:2]
+    next_top = next_bottom = next_left = next_right = 0
+    if top > h - 1:
+        next_top = top - h + 1
+        top = h - 1
+    if bottom > h - 1:
+        next_bottom = bottom - h + 1
+        bottom = h - 1
+    if left > w - 1:
+        next_left = left - w + 1
+        left = w - 1
+    if right > w - 1:
+        next_right = right - w + 1
+        right = w - 1
+    new_shape = list(image.shape)
+    new_shape[0] += top + bottom
+    new_shape[1] += left + right
+    new_image = np.empty(new_shape, dtype=image.dtype)
+    new_image[top:top+h, left:left+w] = image
+    new_image[:top, left:left+w] = image[top:0:-1, :]
+    new_image[top+h:, left:left+w] = image[-1:-bottom-1:-1, :]
+    new_image[:, :left] = new_image[:, left*2:left:-1]
+    new_image[:, left+w:] = new_image[:, -right-1:-right*2-1:-1]
+    return pad_reflection(new_image, next_top, next_bottom,
+                          next_left, next_right)
+
+
+def pad_constant(image, top, bottom, left, right, value):
+    if top == 0 and bottom == 0 and left == 0 and right == 0:
+        return image
+
+    h, w = image.shape[:2]
+    new_shape = list(image.shape)
+    new_shape[0] += top + bottom
+    new_shape[1] += left + right
+    new_image = np.empty(new_shape, dtype=image.dtype)
+    new_image.fill(value)
+    new_image[top:top + h, left:left + w] = image
+
+    return new_image
+
+
+def pad_image(mode, image, top, bottom, left, right, value=0):
+    if mode == 'reflection':
+        if type(image) == np.ndarray:
+            return pad_reflection(np.asarray(image), top, bottom, left, right)
+        else:
+            return Image.fromarray(
+                pad_reflection(np.asarray(image), top, bottom, left, right))
+    elif mode == 'constant':
+        if type(image) == np.ndarray:
+            return pad_constant(np.asarray(image), top, bottom, left, right, value)
+        else:
+            return Image.fromarray(
+                pad_constant(np.asarray(image), top, bottom, left, right, value))
+    else:
+        raise ValueError('Unknown mode {}'.format(mode))
+
+def get_random_bbox(data, tw, th):
+    top = bottom = left = right = 0
+    w, h = data[0].data.size
+
+    if w < tw:
+        left = (tw - w) // 2
+        right = tw - w - left
+    if h < th:
+        top = (th - h) // 2
+        bottom = th - h - top
+
+    if left > 0 or right > 0 or top > 0 or bottom > 0:
+        data[0].data = pad_image('reflection', data[0].data, top, bottom, left, right)
+        for i, mode in enumerate(data[1:]):
+            data[i + 1].data = pad_image('constant', data[i + 1].data, top, bottom, left, right, value=0)
+
+    w, h = data[0].data.size
+    if w == tw and h == th:
+        # should happen after above when image is smaller than crop size
+        return (0, 0, w, h)
+
+    # crop next to objects
+    [y_mask, x_mask] = np.where(data[1].data == 1)
+
+    right_bb = np.max(x_mask)
+    left_bb = np.min(x_mask)
+    top_bb = np.min(y_mask)
+    bottom_bb = np.max(y_mask)
+
+    x_c = int(0.5 * (right_bb + left_bb))
+    y_c = int(0.5 * (bottom_bb + top_bb))
+
+    delta_x = np.max(x_mask) - np.min(x_mask)
+    delta_y = np.max(y_mask) - np.min(y_mask)
+
+    x_min = max(0, x_c - int(0.5 * (delta_x + tw)))
+    x_max = max(0, min(w - tw, x_c + int(0.5 * (delta_x - tw))))
+    y_min = max(0, y_c - int(0.5 * (delta_y + th)))
+    y_max = max(0, min(h - th, y_c + int(0.5 * (delta_y - th))))
+
+    if x_min > x_max:
+        x1 = random.randint(0, x_max)
+    else:
+        x1 = random.randint(x_min, x_max)
+    if y_min > y_max:
+        y1 = random.randint(0, y_max)
+    else:
+        y1 = random.randint(y_min, y_max)
+
+    return (x1, y1, tw, th)
+
+
 class ToTensor(object):
     """Converts a PIL.Image or numpy.ndarray (H x W x C) in the range
     [0, 255] to a torch.FloatTensor of shape (C x H x W) in the range [0.0, 1.0].
@@ -199,7 +312,7 @@ class ToTensor(object):
 
         return img, labels
 
-    
+
 class Compose(object):
     """Composes several transforms together.
     """

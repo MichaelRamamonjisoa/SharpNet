@@ -9,6 +9,7 @@ from data_transforms import *
 import os, sys
 from imageio import imread, imwrite
 
+
 def round_down(num, divisor):
     return num - (num % divisor)
 
@@ -19,6 +20,8 @@ def get_pred_from_input(image_pil, args):
 
     image_np = np.array(image_pil)
     w, h = image_pil.size
+
+    scale = args.rescale_factor
 
     h_new = round_down(int(h * scale), 16)
     w_new = round_down(int(w * scale), 16)
@@ -96,15 +99,6 @@ def get_pred_from_input(image_pil, args):
         m = np.min(depth_pred)
         M = np.max(depth_pred)
         depth_pred = (depth_pred - m) / (M - m)
-        # depth_pred *= 255
-        # if not args.live:
-        #     # depth_pred = (depth_pred * 10000).astype(np.uint16)
-        #     # depth_pred = (depth_pred * 1000) * 255 / 65535
-        #     depth_pred = depth_pred.astype('uint8')
-        # else:
-        #     # depth_pred = (depth_pred * 1000)*255 / 65535
-        #     depth_pred = depth_pred.astype('uint8')
-        # depth = cv2.applyColorMap(depth_pred, cv2.COLORMAP_JET)
         depth = Image.fromarray(np.uint8(plt.cm.jet(depth_pred) * 255))
         depth = np.array(depth)[:, :, :3]
 
@@ -115,6 +109,13 @@ def get_pred_from_input(image_pil, args):
         boundary = (boundary_pred * 255).astype('uint8')
 
     return tuple([depth, normals, boundary])
+
+
+def save_preds(outpath, preds, img_name):
+    suffixes = ['_depth.png', '_normals.png', '_boundary.png', '_img.png']
+    for k, pred in enumerate(preds):
+        if pred is not None:
+            imwrite(os.path.join(outpath, img_name + suffixes[k]), pred)
 
 
 parser = argparse.ArgumentParser(description="Test a model on an image")
@@ -147,8 +148,12 @@ else:
     bias = False
 
 if args.live:
-    cap = cv2.VideoCapture(0)
-    ret, frame = cap.read()
+    try:
+        cap = cv2.VideoCapture(0)
+        ret, frame = cap.read()
+    except:
+        print('Camera not compatible')
+        sys.exit(0)
     frame = Image.fromarray(frame)
     w, h = frame.size
     print('Using camera with resolution: {}x{}'.format(int(args.rescale_factor * w), int(args.rescale_factor * h)))
@@ -188,32 +193,34 @@ if not args.live:
     image_pil = Image.open(image_path)
     w, h = image_pil.size
 
-    # h_new = round_down(int(h * scale), 16)
-    # w_new = round_down(int(w * scale), 16)
-    #
-    # if len(image_np.shape) == 2 or image_np.shape[-1] == 1:
-    #     print("Input image has only 1 channel, please use an RGB or RGBA image")
-    #     sys.exit(0)
-    #
-    # if len(image_np.shape) == 4 or image_np.shape[-1] == 4:
-    #     # RGBA image to be converted to RGB
-    #     image_pil = image_pil.convert('RGBA')
-    #     image = Image.new("RGB", (image_np.shape[1], image_np.shape[0]), (255, 255, 255))
-    #     image.paste(image_pil.copy(), mask=image_pil.split()[3])
-    # else:
-    #     image = image_pil
-    #
-    # image = image.resize((w_new, h_new), Image.ANTIALIAS)
-
     preds = get_pred_from_input(image_pil, args)
-    suffixes = ['_depth.png', '_normals.png', '_boundary.png']
+
+    preds_display = [pred for pred in preds if pred is not None]
+    preds_display.append(image_np)
+    num_pred = len(preds_display)
+
+    if args.display:
+        if (num_pred % 3) < 2:
+            for k, pred in enumerate(preds_display):
+                plt.subplot(2, 2, k)
+                plt.imshow(pred)
+        elif (num_pred % 3) == 2:
+            plt.subplot(1, 2, 1)
+            plt.imshow(image_np)
+            plt.subplot(1, 2, 2)
+            plt.imshow(preds_display[0])
+        elif num_pred == 1:
+            plt.imshow(image_np)
+
     if args.outpath is not None:
-        for i, pred in enumerate(preds):
-            if pred is not None:
-                imwrite(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + suffixes[i]), pred)
+        img_name = os.path.basename(image_path).rsplit('.')[0]
+        save_preds(args.outpath, preds, img_name)
 
 else:
     i = 0
+    print("Press R to switch representation")
+    print("Press T to save current frame and predictions")
+    print("Press Q to quit.")
     while True:
         ret, frame = cap.read()
         image_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
@@ -222,30 +229,19 @@ else:
         preds_display = [pred for pred in preds if pred is not None]
         preds_display.append(frame)
         num_pred = len(preds_display)
-        # display_image = cv2.hconcat(tuple(preds_display))
         cv2.imshow('Preds', preds_display[i])
         k = cv2.waitKey(1)
 
         if k == ord('r'):
             i += 1
             i = i % num_pred
-        elif k == ord('t') and num_pred == 4:
+        elif k == ord('t'):
             print('SAVE')
-            cv2.imwrite('webcam_rgb.png', preds_display[-1])
-            cv2.imwrite('webcam_depth.png', preds_display[0])
-            cv2.imwrite('webcam_normals.png', preds_display[1])
-            cv2.imwrite('webcam_boundary.png', preds_display[2])
+            if args.outpath is not None:
+                save_preds(args.outpath, preds, "cam")
         elif k == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()
 
-# if args.outpath is not None:
-#     imwrite(os.path.join(args.outpath, os.path.basename(image_path).rsplit('.')[0] + '_boundary.png'),
-#             (boundary_pred*255).astype('uint8'))
-
-# if args.display:
-#     plt.subplot(2, 2, 1)
-#     plt.imshow(image_original)  # .swapaxes(0,1).swapaxes(1,2))
-#     plt.show()
