@@ -26,7 +26,7 @@ Clone the repository and download the trained weights:
 - [after finetuning on NYUv2](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK)
 
 Weights trained on NYUv2 should be used for depth estimation, ***however*** weights trained on synthetic data only 
-provide sharper normals and contours predictions for normals and contours predictions.
+provide sharper normals and contours predictions.
 
 ```
 git clone https://github.com/MichaelRamamonjisoa/SharpNet.git
