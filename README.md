@@ -119,7 +119,7 @@ If you find SharpNet useful in your research, please consider citing:
 @article{ramamonjisoa2019sharpnet,
     Title = {SharpNet: Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation},
     Author = {Michael Ramamonjisoa and Vincent Lepetit},
-    Journal = {arXiv preprint arXiv:1905.08598},
+    Journal = {The IEEE International Conference on Computer Vision (ICCV) Workshops},
     Year = {2019}
 }
 ```
