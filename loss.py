@@ -264,7 +264,7 @@ class SpatialGradientsLoss(nn.Module):
 
 
 class DepthBoundaryConsensusLoss(nn.Module):
-    def __init__(self, kernel_size=3, clamp_value=1e-7, size_average=False):
+    def __init__(self, kernel_size=3, use_logs=True, clamp_value=1e-7, size_average=False):
         super(DepthBoundaryConsensusLoss, self).__init__()
 
         self.size_average = size_average
@@ -288,15 +288,24 @@ class DepthBoundaryConsensusLoss(nn.Module):
         sobel_y = sobel_y.view((1, 1, 3, 3))
         sobel_y = torch.autograd.Variable(sobel_y.cuda())
 
+        lap = torch.Tensor([[0, 1, 0], [1, -4, 1], [0, 1, 0]])
+        lap = lap.view((1, 1, 3, 3))
+        lap = torch.autograd.Variable(lap.cuda())
+
         if repeat_channels != 1:
             sobel_x = sobel_x.repeat(1, repeat_channels, 1, 1)
             sobel_y = sobel_y.repeat(1, repeat_channels, 1, 1)
+            lap = lap.repeat(1, repeat_channels, 1, 1)
+
+        lap_depth = F.conv2d(depth, (1 / 8.0) * lap, padding=1)
 
         gx = F.conv2d(depth, (1.0 / 8.0) * sobel_x, padding=1)
         gy = F.conv2d(depth, (1.0 / 8.0) * sobel_y, padding=1)
-
         g_depth = torch.pow(gx, 2) + torch.pow(gy, 2)
-        loss = torch.abs(mul(g_depth, thLog(boundary.clamp(min=self.clamp_value))))
+        boundary = boundary.clamp(min=self.clamp_value, max=1 - self.clamp_value)
+        loss = torch.abs(mul(mul(g_depth, thLog(boundary)), lap_depth))
+        loss = loss + 0.0001 * torch.abs(mul(thLog(1 - boundary), torch.exp(-lap_depth)))
+        loss = loss + 0.0001 * torch.abs(boundary)
 
         if mask is None:
             return loss.sum() / (float(depth.numel()))
