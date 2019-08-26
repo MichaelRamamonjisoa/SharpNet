@@ -26,7 +26,7 @@ Clone the repository and download the trained weights:
 - [after finetuning on NYUv2](https://drive.google.com/open?id=1UTruzxPxQdoxF44X7D27f8rISFU0bKMK)
 
 Weights trained on NYUv2 should be used for depth estimation, ***however*** weights trained on synthetic data only 
-provide sharper normals and contours predictions for normals and contours predictions.
+provide sharper normals and contours predictions.
 
 ```
 git clone https://github.com/MichaelRamamonjisoa/SharpNet.git
@@ -119,7 +119,7 @@ If you find SharpNet useful in your research, please consider citing:
 @article{ramamonjisoa2019sharpnet,
     Title = {SharpNet: Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation},
     Author = {Michael Ramamonjisoa and Vincent Lepetit},
-    Journal = {arXiv preprint arXiv:1905.08598},
+    Journal = {The IEEE International Conference on Computer Vision (ICCV) Workshops},
     Year = {2019}
 }
 ```
