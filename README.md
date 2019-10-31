@@ -90,10 +90,9 @@ Use the following command to train the network on NYUv2:
 python3 train_sharpnet.py --dataset NYU \
 --rootdir ../datasets/ \
 -b BATCH_SIZE --lr 8e-3 \
---max-epoch 100 \
 --cuda CUDA_DEVICE_ID --cpu NUM_PROCESSES \
 --boundary --normals --depth \
---lr 8e-3 --max-epoch 80 
+--lr 8e-3 --max-epoch 80 \ 
 --pretrained-model ../models/final_checkpoint_PBRS.pth \
 --bias \
 --exp_name CUSTOM_EXPERIMENT_NAME \
@@ -110,7 +109,25 @@ Please read the paper for details on parameters we used.
 
 ## Evaluation
 
-TODO
+### NYUv2-OC dataset
+You can find manually dataset we used for occluding contour quality evaluation [here](https://drive.google.com/file/d/1ge2WZXNc1Sh-Su4BjYzUGWzNHqrM6555/view?usp=sharing).
+*Complete table coming soon*
+
+### Run the code
+Run the evaluation code using:
+
+```
+python3 eval.py \
+--rootdir DIR_CONTAINING_ALL_PREDICTIONS \
+--cuda CUDA_DEVICE_ID \
+--pretrained-model ../models/final_checkpoint_PBRS.pth \
+--edges --crop \
+--savepath PREDICTION_SAVEPATH \
+--low LOW_CANNY_THRESHOLD \
+--high HIGH_CANNY_THRESHOLD
+```
+
+Replace all capital FIELDS with appropriate values.
 
 ## Citation
 
