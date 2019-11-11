@@ -2,7 +2,7 @@
 *Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation*, 
 by Michaël Ramamonjisoa and Vincent Lepetit.
 
-Link to the paper: [arXiv](https://arxiv.org/abs/1905.08598)
+Link to the paper: [here](http://openaccess.thecvf.com/content_ICCVW_2019/papers/3DRW/Ramamonjisoa_SharpNet_Fast_and_Accurate_Recovery_of_Occluding_Contours_in_Monocular_ICCVW_2019_paper.pdf)
 
 <p align="center">
   <img src="architecture.png" width="800"/>
