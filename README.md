@@ -89,7 +89,7 @@ Use the following command to train the network on NYUv2:
 ```
 python3 train_sharpnet.py --dataset NYU \
 --rootdir ../datasets/ \
--b BATCH_SIZE --lr 8e-3 \
+-b BATCH_SIZE \
 --cuda CUDA_DEVICE_ID --cpu NUM_PROCESSES \
 --boundary --normals --depth \
 --lr 8e-3 --max-epoch 80 \ 
@@ -101,7 +101,7 @@ python3 train_sharpnet.py --dataset NYU \
 ```
 
 Set **BATCH_SIZE**, **NUM_PROCESSES** based on your GPU and CPU capabilities.
-A GPU is required for training (change **CUDA_DEVICE_ID** for multiple GPU usage).
+A GPU is required for training (multiple GPU is not supported yet).
 
 *Work in progress: argument parsing with configuration file.* 
 
