@@ -110,7 +110,7 @@ Please read the paper for details on parameters we used.
 ## Evaluation
 
 ### NYUv2-OC dataset
-You can find our manually annotated dataset used for occluding contour quality evaluation [here](https://drive.google.com/file/d/1ge2WZXNc1Sh-Su4BjYzUGWzNHqrM6555/view?usp=sharing).
+You can find our manually annotated dataset used for occluding contour quality evaluation [here](https://drive.google.com/file/d/1HsQTlAPKzQxyLyh-HLUvNF5-igTXOwSd/view?usp=sharing).
 
 
 ### Run the code
