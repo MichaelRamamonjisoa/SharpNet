@@ -9,10 +9,25 @@ from data_transforms import *
 
 
 def round_down(num, divisor):
+    """
+    Round a number to the given number.
+
+    Args:
+        num: (int): write your description
+        divisor: (todo): write your description
+    """
     return num - (num % divisor)
 
 
 def get_np_preds(image_pil, model, device, args):
+    """
+    Get the predicted mean prediction
+
+    Args:
+        image_pil: (str): write your description
+        model: (str): write your description
+        device: (str): write your description
+    """
     normals = None
     boundary = None
     depth = None
@@ -108,6 +123,12 @@ def get_np_preds(image_pil, model, device, args):
 
 
 def get_params(model):
+    """
+    Return a generator parameters.
+
+    Args:
+        model: (todo): write your description
+    """
     for m in model.modules():
         if isinstance(m, nn.Conv2d):
             for p in m.parameters():
@@ -115,6 +136,13 @@ def get_params(model):
 
 
 def freeze_model_decoders(model, freeze_decoders):
+    """
+    Freeze model models.
+
+    Args:
+        model: (todo): write your description
+        freeze_decoders: (str): write your description
+    """
     if 'normals' in freeze_decoders:
         model.normals_decoder.freeze()
     if 'depth' in freeze_decoders:
@@ -124,6 +152,13 @@ def freeze_model_decoders(model, freeze_decoders):
 
 
 def get_gt_sample(dataloader, loader_iter, args):
+    """
+    Get a sample from a sample.
+
+    Args:
+        dataloader: (todo): write your description
+        loader_iter: (int): write your description
+    """
     try:
         data = next(loader_iter)
     except:
@@ -175,6 +210,25 @@ def write_loss_components(tb_writer, iteration, epoch, dataset_size, args,
                           boundary_loss_meter=None, boundary_loss=None,
                           grad_loss_meter=None, grad_loss=None,
                           consensus_loss_meter=None, consensus_loss=None):
+    """
+    Writes the loss to tb_writer.
+
+    Args:
+        tb_writer: (todo): write your description
+        iteration: (int): write your description
+        epoch: (todo): write your description
+        dataset_size: (int): write your description
+        depth_loss_meter: (todo): write your description
+        depth_loss: (todo): write your description
+        normals_loss_meter: (str): write your description
+        normals_loss: (todo): write your description
+        boundary_loss_meter: (todo): write your description
+        boundary_loss: (todo): write your description
+        grad_loss_meter: (todo): write your description
+        grad_loss: (todo): write your description
+        consensus_loss_meter: (todo): write your description
+        consensus_loss: (todo): write your description
+    """
 
     if args.normals and normals_loss_meter is not None:
         if args.verbose:
@@ -202,6 +256,13 @@ def write_loss_components(tb_writer, iteration, epoch, dataset_size, args,
 
 
 def get_tensor_preds(input, model, args):
+    """
+    Returns tensorflow tensors.
+
+    Args:
+        input: (todo): write your description
+        model: (str): write your description
+    """
     depth_pred = None
     normals_pred = None
     boundary_pred = None

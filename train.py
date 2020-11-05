@@ -25,6 +25,28 @@ def train_epoch(train_loader, val_loader, model, criterion, optimizer, epoch,
                 date_str, model_save_path,
                 args,
                 boundary_loss_meter=None, consensus_loss_meter=None):
+    """
+    Train an epoch.
+
+    Args:
+        train_loader: (todo): write your description
+        val_loader: (todo): write your description
+        model: (todo): write your description
+        criterion: (int): write your description
+        optimizer: (todo): write your description
+        epoch: (todo): write your description
+        train_writer: (todo): write your description
+        val_writer: (todo): write your description
+        train_loss_meter: (todo): write your description
+        val_loss_meter: (todo): write your description
+        depth_loss_meter: (todo): write your description
+        grad_loss_meter: (todo): write your description
+        normals_loss_meter: (todo): write your description
+        date_str: (str): write your description
+        model_save_path: (str): write your description
+        boundary_loss_meter: (todo): write your description
+        consensus_loss_meter: (todo): write your description
+    """
 
     batch_size = int(args.batch_size)
     iter_size = args.iter_size
@@ -189,6 +211,11 @@ def train_epoch(train_loader, val_loader, model, criterion, optimizer, epoch,
 
 
 def get_trainval_splits(args):
+    """
+    Get splits.
+
+    Args:
+    """
     t = {'SCALE': 2,
          'CROP': 320,
          'HORIZONTALFLIP': 1,
@@ -258,6 +285,11 @@ def get_trainval_splits(args):
 
 
 def main():
+    """
+    Main function.
+
+    Args:
+    """
     parser = argparse.ArgumentParser(description="Train the SharpNet network")
     parser.add_argument('--dataset', '-d', dest='dataset', help='Name of the dataset (MLT, NYUv2 or pix3d)')
     parser.add_argument('--exp_name', dest='experiment_name', help='Custom name of the experiment', type=str, default=None)

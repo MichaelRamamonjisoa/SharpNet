@@ -36,6 +36,16 @@ class BasicBlock(nn.Module):
     expansion = 1
 
     def __init__(self, inplanes, planes, stride=1, downsample=None):
+        """
+        Initialize batch.
+
+        Args:
+            self: (todo): write your description
+            inplanes: (todo): write your description
+            planes: (todo): write your description
+            stride: (int): write your description
+            downsample: (todo): write your description
+        """
         super(BasicBlock, self).__init__()
         self.conv1 = conv3x3(inplanes, planes, stride)
         self.bn1 = nn.BatchNorm2d(planes)
@@ -46,6 +56,13 @@ class BasicBlock(nn.Module):
         self.stride = stride
 
     def forward(self, x):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         residual = x
 
         out = self.conv1(x)
@@ -68,6 +85,18 @@ class Bottleneck(nn.Module):
     # expansion = 4
 
     def __init__(self, inplanes, planes, stride=1, downsample=None, expansion=4, dilation=(1, 1)):
+        """
+        Initialize the convolutional layer.
+
+        Args:
+            self: (todo): write your description
+            inplanes: (todo): write your description
+            planes: (todo): write your description
+            stride: (int): write your description
+            downsample: (todo): write your description
+            expansion: (todo): write your description
+            dilation: (todo): write your description
+        """
         super(Bottleneck, self).__init__()
         self.expansion = expansion
         self.conv1 = conv1x1(inplanes, planes)
@@ -84,6 +113,13 @@ class Bottleneck(nn.Module):
         self.stride = stride
 
     def forward(self, x):
+        """
+        Perform forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         residual = x
 
         out = self.conv1(x)
@@ -109,6 +145,15 @@ class Bottleneck(nn.Module):
 class ResNet(nn.Module):
 
     def __init__(self, block, layers, num_classes=1000):
+        """
+        Initialize the network.
+
+        Args:
+            self: (todo): write your description
+            block: (todo): write your description
+            layers: (list): write your description
+            num_classes: (int): write your description
+        """
         super(ResNet, self).__init__()
         self.inplanes = 64
         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, #3 (RGB) * 7x7 * 64
@@ -132,6 +177,16 @@ class ResNet(nn.Module):
                 nn.init.constant_(m.bias, 0)
 
     def _make_layer(self, block, planes, blocks, stride=1):
+        """
+        Make a layer.
+
+        Args:
+            self: (todo): write your description
+            block: (todo): write your description
+            planes: (todo): write your description
+            blocks: (todo): write your description
+            stride: (int): write your description
+        """
         downsample = None
         # for all resblocks self.layerI(first inplanes != planes * expansion then stride=2 => depth 512->256)
         if stride != 1 or self.inplanes != planes * block.expansion:
@@ -149,6 +204,13 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
+        """
+        Perform forward computation.
+
+        Args:
+            self: (todo): write your description
+            x: (todo): write your description
+        """
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)

@@ -11,9 +11,22 @@ from imageio import imread, imwrite
 
 
 def round_down(num, divisor):
+    """
+    Round a number to the given number.
+
+    Args:
+        num: (int): write your description
+        divisor: (todo): write your description
+    """
     return num - (num % divisor)
 
 def get_pred_from_input(image_pil, args):
+    """
+    Get a pred predictive
+
+    Args:
+        image_pil: (todo): write your description
+    """
     normals = None
     boundary = None
     depth = None
@@ -112,6 +125,14 @@ def get_pred_from_input(image_pil, args):
 
 
 def save_preds(outpath, preds, img_name):
+    """
+    Save predefined images.
+
+    Args:
+        outpath: (str): write your description
+        preds: (todo): write your description
+        img_name: (str): write your description
+    """
     suffixes = ['_depth.png', '_normals.png', '_boundary.png', '_img.png']
     for k, pred in enumerate(preds):
         if pred is not None:

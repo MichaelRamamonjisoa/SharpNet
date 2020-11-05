@@ -16,6 +16,20 @@ class GeoDataset(Dataset):
                  use_depth=True,
                  use_normals=True,
                  input_type='image'):
+        """
+        Initialize the image.
+
+        Args:
+            self: (todo): write your description
+            img_list: (list): write your description
+            root_dir: (str): write your description
+            img_size: (int): write your description
+            transforms: (str): write your description
+            use_boundary: (bool): write your description
+            use_depth: (bool): write your description
+            use_normals: (bool): write your description
+            input_type: (str): write your description
+        """
 
         if root_dir == '':
             self.root_dir = os.getcwd()
@@ -31,6 +45,12 @@ class GeoDataset(Dataset):
         self.input_type = input_type
 
     def __len__(self):
+        """
+        Returns the length of the image.
+
+        Args:
+            self: (todo): write your description
+        """
         return len(self.img_list)
 
     def format_data(self, image=None,
@@ -38,6 +58,17 @@ class GeoDataset(Dataset):
                     depth=None,
                     normals=None,
                     boundary=None):
+        """
+        Format the image.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+            mask_valid: (str): write your description
+            depth: (int): write your description
+            normals: (bool): write your description
+            boundary: (int): write your description
+        """
         # augment data and format it to tensor type
 
         data = [image, mask_valid,
@@ -101,6 +132,13 @@ class GeoDataset(Dataset):
         return tuple([m.data for m in data if m is not None])
 
     def __getitem__(self, idx):
+        """
+        Return an index from the image
+
+        Args:
+            self: (todo): write your description
+            idx: (list): write your description
+        """
         # overwrite this function when creating a new dataset
         image = self.img_list[idx]
         mask_valid = np.ones(np.array(image).shape[:2])
@@ -122,6 +160,20 @@ class PBRSDataset(GeoDataset):
                  use_depth=True,
                  use_normals=True,
                  input_type='image'):
+        """
+        Initialize a list of images.
+
+        Args:
+            self: (todo): write your description
+            img_list: (list): write your description
+            root_dir: (str): write your description
+            img_size: (int): write your description
+            transforms: (str): write your description
+            use_boundary: (bool): write your description
+            use_depth: (bool): write your description
+            use_normals: (bool): write your description
+            input_type: (str): write your description
+        """
         super(PBRSDataset, self).__init__(img_list, root_dir=root_dir, img_size=img_size,
                                           transforms=transforms,
                                           use_boundary=use_boundary,
@@ -130,9 +182,22 @@ class PBRSDataset(GeoDataset):
                                           input_type=input_type)
 
     def __len__(self):
+        """
+        Returns the length of the image.
+
+        Args:
+            self: (todo): write your description
+        """
         return len(self.img_list)
 
     def __getitem__(self, idx):
+        """
+        Return an item at indexx
+
+        Args:
+            self: (todo): write your description
+            idx: (list): write your description
+        """
         img_name = self.img_list[idx]
         img_path = os.path.join(self.root_dir, 'img', img_name)
         image = Image.open(img_path)
@@ -180,6 +245,21 @@ class NYUDataset(GeoDataset):
                  use_depth=True,
                  use_normals=True,
                  input_type='image'):
+        """
+        Initialize the dataset.
+
+        Args:
+            self: (todo): write your description
+            dataset_path: (str): write your description
+            split_type: (str): write your description
+            root_dir: (str): write your description
+            img_size: (int): write your description
+            transforms: (str): write your description
+            use_boundary: (bool): write your description
+            use_depth: (bool): write your description
+            use_normals: (bool): write your description
+            input_type: (str): write your description
+        """
         super(NYUDataset, self).__init__(img_list=None, root_dir=root_dir, img_size=img_size,
                                          transforms=transforms,
                                          use_boundary=use_boundary,
@@ -192,9 +272,22 @@ class NYUDataset(GeoDataset):
         self.idx_list = [idx[0] - 1 for idx in used_split[split_type + 'Ndxs']]
 
     def __len__(self):
+        """
+        Returns the number of rows in this list.
+
+        Args:
+            self: (todo): write your description
+        """
         return len(self.idx_list)
 
     def __getitem__(self, idx):
+        """
+        Retrieve a 2d data.
+
+        Args:
+            self: (todo): write your description
+            idx: (list): write your description
+        """
         # Get image from NYUv2 mat file
         # Crop border by 6 pixels
         dataset = h5py.File(self.dataset_path, 'r', libver='latest', swmr=True)

@@ -9,6 +9,15 @@ from torch.nn import functional as F
 class DoobNetLoss(nn.Module):
     # Based on Wang et al.
     def __init__(self, beta, gamma, sigma):
+        """
+        Initialize the loss
+
+        Args:
+            self: (todo): write your description
+            beta: (float): write your description
+            gamma: (float): write your description
+            sigma: (float): write your description
+        """
         super(DoobNetLoss, self).__init__()
         self.alpha = Variable(Tensor([0]))
         self.beta = beta
@@ -17,6 +26,14 @@ class DoobNetLoss(nn.Module):
         self.sigma = sigma
 
     def forward(self, b_pred, b_gt):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            b_pred: (todo): write your description
+            b_gt: (todo): write your description
+        """
         N = b_gt.shape[0]
         b_pred = b_pred.view(-1, 1)
         b_gt = b_gt.view(-1, 1)
@@ -45,6 +62,18 @@ class DoobNetLoss(nn.Module):
 class SharpNetLoss(nn.Module):
     def __init__(self, lamb, mu, use_depth=False, use_normals=False,
                  use_boundary=False, use_geo_consensus=False):
+        """
+        Initialize the gradient
+
+        Args:
+            self: (todo): write your description
+            lamb: (array): write your description
+            mu: (array): write your description
+            use_depth: (bool): write your description
+            use_normals: (bool): write your description
+            use_boundary: (bool): write your description
+            use_geo_consensus: (bool): write your description
+        """
         super(SharpNetLoss, self).__init__()
 
         self.lamb = lamb
@@ -74,6 +103,21 @@ class SharpNetLoss(nn.Module):
                 n_pred=None, n_gt=None,
                 b_pred=None, b_gt=None,
                 val=False, use_grad=False):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            mask_gt: (todo): write your description
+            d_pred: (todo): write your description
+            d_gt: (todo): write your description
+            n_pred: (int): write your description
+            n_gt: (int): write your description
+            b_pred: (todo): write your description
+            b_gt: (todo): write your description
+            val: (todo): write your description
+            use_grad: (bool): write your description
+        """
 
         d_loss = 0
         n_loss = 0
@@ -120,12 +164,30 @@ class LainaBerHuLoss(nn.Module):
     # Based on Laina et al.
 
     def __init__(self, size_average=True, use_logs=True, clamp_val=1e-9):
+        """
+        Initialize the class.
+
+        Args:
+            self: (todo): write your description
+            size_average: (int): write your description
+            use_logs: (bool): write your description
+            clamp_val: (float): write your description
+        """
         super(LainaBerHuLoss, self).__init__()
         self.size_average = size_average
         self.use_log = use_logs
         self.clamp_val = clamp_val
 
     def forward(self, input, target, mask):
+        """
+        Compute the forward
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            target: (todo): write your description
+            mask: (todo): write your description
+        """
         if self.use_log:
             n = thLog(input.clamp(min=self.clamp_val)) - thLog(target.clamp(min=self.clamp_val))
         else:
@@ -149,11 +211,29 @@ class LainaBerHuLoss(nn.Module):
 
 class HuberLoss(nn.Module):
     def __init__(self, size_average=True, use_logs=True, sigma=1):
+        """
+        Initialize sigma map.
+
+        Args:
+            self: (todo): write your description
+            size_average: (int): write your description
+            use_logs: (bool): write your description
+            sigma: (float): write your description
+        """
         super(HuberLoss, self).__init__()
         self.size_average = size_average
         self.sigma = sigma
 
     def forward(self, input, target, mask=None):
+        """
+        Forward computation
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            target: (todo): write your description
+            mask: (todo): write your description
+        """
         n = torch.abs(input - target)
         if mask is not None:
             n = mul(n, mask)
@@ -169,6 +249,14 @@ class HuberLoss(nn.Module):
 
 
 def normals_loss(input, target, mask=None):
+    """
+    R compute the norm of a vector.
+
+    Args:
+        input: (array): write your description
+        target: (todo): write your description
+        mask: (array): write your description
+    """
     if input is None or target is None:
         return 0
     else:
@@ -190,6 +278,18 @@ class SpatialGradientsLoss(nn.Module):
     def __init__(self, kernel_size=3, use_logs=True, clamp_value=1e-7, size_average=False,
                  smooth_error=True,
                  gradient_loss_on=True):
+        """
+        Initialize loss.
+
+        Args:
+            self: (todo): write your description
+            kernel_size: (int): write your description
+            use_logs: (bool): write your description
+            clamp_value: (float): write your description
+            size_average: (int): write your description
+            smooth_error: (todo): write your description
+            gradient_loss_on: (bool): write your description
+        """
         super(SpatialGradientsLoss, self).__init__()
 
         self.size_average = size_average
@@ -203,6 +303,15 @@ class SpatialGradientsLoss(nn.Module):
             self.masked_huber_loss = HuberLoss(sigma=3)
 
     def forward(self, input, target, mask=None):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            input: (todo): write your description
+            target: (todo): write your description
+            mask: (todo): write your description
+        """
 
         repeat_channels = target.shape[1]
 
@@ -265,6 +374,16 @@ class SpatialGradientsLoss(nn.Module):
 
 class DepthBoundaryConsensusLoss(nn.Module):
     def __init__(self, kernel_size=3, use_logs=True, clamp_value=1e-7, size_average=False):
+        """
+        Initialize kernel
+
+        Args:
+            self: (todo): write your description
+            kernel_size: (int): write your description
+            use_logs: (bool): write your description
+            clamp_value: (float): write your description
+            size_average: (int): write your description
+        """
         super(DepthBoundaryConsensusLoss, self).__init__()
 
         self.size_average = size_average
@@ -272,6 +391,15 @@ class DepthBoundaryConsensusLoss(nn.Module):
         self.clamp_value = clamp_value
 
     def forward(self, depth, boundary, mask=None):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            depth: (todo): write your description
+            boundary: (todo): write your description
+            mask: (todo): write your description
+        """
         repeat_channels = depth.shape[1]
 
         sobel_x = torch.Tensor([[1, 0, -1],
@@ -316,6 +444,15 @@ class DepthBoundaryConsensusLoss(nn.Module):
 
 class NormalDepthConsensusLoss(nn.Module):
     def __init__(self, kernel_size=3, clamp_value=1e-7, size_average=False):
+        """
+        Initialize kernel
+
+        Args:
+            self: (todo): write your description
+            kernel_size: (int): write your description
+            clamp_value: (float): write your description
+            size_average: (int): write your description
+        """
         super(NormalDepthConsensusLoss, self).__init__()
 
         self.size_average = size_average
@@ -323,6 +460,15 @@ class NormalDepthConsensusLoss(nn.Module):
         self.clamp_value = clamp_value
 
     def forward(self, normals, depth, boundary):
+        """
+        Forward computation. forward.
+
+        Args:
+            self: (todo): write your description
+            normals: (todo): write your description
+            depth: (todo): write your description
+            boundary: (todo): write your description
+        """
         repeat_channels = depth.shape[1]
 
         sobel_x = torch.Tensor([[1, 0, -1],
