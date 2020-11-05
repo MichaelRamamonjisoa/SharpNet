@@ -11,10 +11,26 @@ class Normalize(object):
     """
 
     def __init__(self, mean, std):
+        """
+        Initialize the standard deviation.
+
+        Args:
+            self: (todo): write your description
+            mean: (float): write your description
+            std: (array): write your description
+        """
         self.mean = torch.FloatTensor(mean)
         self.std = torch.FloatTensor(std)
 
     def __call__(self, image, labels=None):
+        """
+        Call a tuple of the images.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+            labels: (todo): write your description
+        """
 
         if image.device.type != 'cpu':
             means = [self.mean] * image.size()[0]
@@ -33,6 +49,16 @@ class Normalize(object):
 
 
 def pad_reflection(image, top, bottom, left, right):
+    """
+    Pad image bytest if necessary.
+
+    Args:
+        image: (array): write your description
+        top: (str): write your description
+        bottom: (todo): write your description
+        left: (str): write your description
+        right: (bool): write your description
+    """
     if top == 0 and bottom == 0 and left == 0 and right == 0:
         return image
     h, w = image.shape[:2]
@@ -63,6 +89,17 @@ def pad_reflection(image, top, bottom, left, right):
 
 
 def pad_constant(image, top, bottom, left, right, value):
+    """
+    Pad an image with an image.
+
+    Args:
+        image: (array): write your description
+        top: (str): write your description
+        bottom: (todo): write your description
+        left: (todo): write your description
+        right: (todo): write your description
+        value: (str): write your description
+    """
     if top == 0 and bottom == 0 and left == 0 and right == 0:
         return image
 
@@ -78,6 +115,18 @@ def pad_constant(image, top, bottom, left, right, value):
 
 
 def pad_image(mode, image, top, bottom, left, right, value=0):
+    """
+    Pad an image to width and height.
+
+    Args:
+        mode: (todo): write your description
+        image: (array): write your description
+        top: (str): write your description
+        bottom: (todo): write your description
+        left: (todo): write your description
+        right: (todo): write your description
+        value: (str): write your description
+    """
     if mode == 'reflection':
         if type(image) == np.ndarray:
             return pad_reflection(np.asarray(image), top, bottom, left, right)
@@ -95,6 +144,14 @@ def pad_image(mode, image, top, bottom, left, right, value=0):
 
 
 def get_random_crop(data, tw, th):
+    """
+    Get a crop of the image.
+
+    Args:
+        data: (todo): write your description
+        tw: (str): write your description
+        th: (todo): write your description
+    """
     top = bottom = left = right = 0
     w, h = data[0].data.size
 
@@ -153,6 +210,16 @@ def get_random_crop(data, tw, th):
 
 
 def pad_reflection(image, top, bottom, left, right):
+    """
+    Pad image bytest if necessary.
+
+    Args:
+        image: (array): write your description
+        top: (str): write your description
+        bottom: (todo): write your description
+        left: (str): write your description
+        right: (bool): write your description
+    """
     if top == 0 and bottom == 0 and left == 0 and right == 0:
         return image
     h, w = image.shape[:2]
@@ -183,6 +250,17 @@ def pad_reflection(image, top, bottom, left, right):
 
 
 def pad_constant(image, top, bottom, left, right, value):
+    """
+    Pad an image with an image.
+
+    Args:
+        image: (array): write your description
+        top: (str): write your description
+        bottom: (todo): write your description
+        left: (todo): write your description
+        right: (todo): write your description
+        value: (str): write your description
+    """
     if top == 0 and bottom == 0 and left == 0 and right == 0:
         return image
 
@@ -198,6 +276,18 @@ def pad_constant(image, top, bottom, left, right, value):
 
 
 def pad_image(mode, image, top, bottom, left, right, value=0):
+    """
+    Pad an image to width and height.
+
+    Args:
+        mode: (todo): write your description
+        image: (array): write your description
+        top: (str): write your description
+        bottom: (todo): write your description
+        left: (todo): write your description
+        right: (todo): write your description
+        value: (str): write your description
+    """
     if mode == 'reflection':
         if type(image) == np.ndarray:
             return pad_reflection(np.asarray(image), top, bottom, left, right)
@@ -214,6 +304,14 @@ def pad_image(mode, image, top, bottom, left, right, value=0):
         raise ValueError('Unknown mode {}'.format(mode))
 
 def get_random_bbox(data, tw, th):
+    """
+    Get a bounding box of the image.
+
+    Args:
+        data: (todo): write your description
+        tw: (str): write your description
+        th: (str): write your description
+    """
     top = bottom = left = right = 0
     w, h = data[0].data.size
 
@@ -271,6 +369,14 @@ class ToTensor(object):
     """
 
     def __call__(self, pic, labels=None):
+        """
+        Pushes the image.
+
+        Args:
+            self: (todo): write your description
+            pic: (todo): write your description
+            labels: (todo): write your description
+        """
         if isinstance(pic, np.ndarray):
             # handle numpy array
             img = torch.from_numpy(pic)
@@ -318,9 +424,22 @@ class Compose(object):
     """
 
     def __init__(self, transforms):
+        """
+        Initialize the transport.
+
+        Args:
+            self: (todo): write your description
+            transforms: (str): write your description
+        """
         self.transforms = transforms
 
     def __call__(self, *args):
+        """
+        Calls all of the function.
+
+        Args:
+            self: (todo): write your description
+        """
         for t in self.transforms:
             # if not isinstance(t, RandomHorizontalFlip):
             args = t(*args)

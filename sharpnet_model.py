@@ -11,6 +11,21 @@ class Decoder(nn.Module):
                  bias=False, normalize_output=False,
                  interpolation='bilinear',
                  out_activation='ReLU'):
+        """
+        Initialize the convolution layer.
+
+        Args:
+            self: (todo): write your description
+            inplanes: (todo): write your description
+            in_channels: (int): write your description
+            out_channels: (int): write your description
+            layers_nums: (int): write your description
+            kernel_size: (int): write your description
+            bias: (float): write your description
+            normalize_output: (bool): write your description
+            interpolation: (todo): write your description
+            out_activation: (str): write your description
+        """
 
         super(Decoder, self).__init__()
 
@@ -30,6 +45,18 @@ class Decoder(nn.Module):
 
     def _make_decoder(self, in_channels, out_channels, in_layers_nums, kernel_size=3, bias=True,
                       out_activation='ReLU'):
+        """
+        Buildsigm decoder.
+
+        Args:
+            self: (todo): write your description
+            in_channels: (int): write your description
+            out_channels: (todo): write your description
+            in_layers_nums: (int): write your description
+            kernel_size: (int): write your description
+            bias: (str): write your description
+            out_activation: (todo): write your description
+        """
 
         layers_list = []
         for i, convs in enumerate(in_layers_nums):
@@ -69,10 +96,24 @@ class Decoder(nn.Module):
         return layers_list
 
     def freeze(self):
+        """
+        Freeze all modules
+
+        Args:
+            self: (todo): write your description
+        """
         for m in self.modules():
             m.eval()
 
     def forward(self, resized_resnet_outputs, input_image):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            resized_resnet_outputs: (int): write your description
+            input_image: (todo): write your description
+        """
 
         # upconv4
         if self.interpolation == 'bilinear':
@@ -142,6 +183,19 @@ class SharpNet(nn.Module):
                  use_normals=False,
                  use_depth=False,
                  use_boundary=False, bias_decoder=True):
+        """
+        Initialize the layers.
+
+        Args:
+            self: (todo): write your description
+            block: (todo): write your description
+            layers_encoder: (list): write your description
+            layers_decoders: (list): write your description
+            use_normals: (bool): write your description
+            use_depth: (bool): write your description
+            use_boundary: (bool): write your description
+            bias_decoder: (todo): write your description
+        """
         super(SharpNet, self).__init__()
 
         if use_normals:
@@ -216,6 +270,18 @@ class SharpNet(nn.Module):
                 m.eval()
 
     def _make_res_layer(self, block, planes, blocks, stride=1, expansion=4, dilation=1):
+        """
+        Make a layer.
+
+        Args:
+            self: (todo): write your description
+            block: (todo): write your description
+            planes: (todo): write your description
+            blocks: (todo): write your description
+            stride: (int): write your description
+            expansion: (todo): write your description
+            dilation: (str): write your description
+        """
         downsample = None
         # either only first block of all ResBlock is downsampled to match x with the output dimension
         # or also if the block has in_planes = out_planes
@@ -238,6 +304,13 @@ class SharpNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x_img):
+        """
+        Forward computation.
+
+        Args:
+            self: (todo): write your description
+            x_img: (todo): write your description
+        """
         x_img_out = self.conv1_img(x_img)
         x_img_out = self.bn1_img(x_img_out)
         x_img_out = self.relu_img(x_img_out)

@@ -13,19 +13,56 @@ class Representation(object):
     """
 
     def __init__(self, data=None, name=None):
+        """
+        Initialize the data.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+            name: (str): write your description
+        """
         self.data = data
         self.name = name
 
     def set_data(self, data):
+        """
+        Set the data.
+
+        Args:
+            self: (array): write your description
+            data: (array): write your description
+        """
         self.data = data
 
     def shape(self):
+        """
+        The shape of the shape.
+
+        Args:
+            self: (todo): write your description
+        """
         return (self.data).shape
 
     def rotate(self, angle, cval=0):
+        """
+        Rotate the image.
+
+        Args:
+            self: (todo): write your description
+            angle: (float): write your description
+            cval: (int): write your description
+        """
         self.data = scp_rotate(self.data, angle, reshape=False, order=0, mode='wrap', prefilter=False)
 
     def scale(self, ratio, interpolation='NEAREST'):
+        """
+        Scale the image.
+
+        Args:
+            self: (todo): write your description
+            ratio: (todo): write your description
+            interpolation: (int): write your description
+        """
         h, w = self.data.shape[:2]
         tw = int(ratio * w)
         th = int(ratio * h)
@@ -41,15 +78,43 @@ class Representation(object):
         self.data = cv2.resize(self.data, dsize=(tw, th), interpolation=interpolation)
 
     def crop(self, x1, y1, tw, th):
+        """
+        Crop the image.
+
+        Args:
+            self: (todo): write your description
+            x1: (array): write your description
+            y1: (array): write your description
+            tw: (array): write your description
+            th: (array): write your description
+        """
         self.data = self.data[y1:y1 + th, x1:x1 + tw]
 
     def fliplr(self):
+        """
+        Fliplens the data.
+
+        Args:
+            self: (todo): write your description
+        """
         self.data = np.fliplr(self.data)
 
     def to_tensor(self):
+        """
+        Convert the tensor.
+
+        Args:
+            self: (todo): write your description
+        """
         self.data = torch.LongTensor(np.array(self.data, dtype=np.int))
 
     def normalize(self):
+        """
+        Normalize the given value.
+
+        Args:
+            self: (todo): write your description
+        """
         return 1
 
 
@@ -59,11 +124,24 @@ class InputImage(Representation):
     """
 
     def __init__(self, data):
+        """
+        Initialize an input.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+        """
         super(InputImage, self).__init__(data=data, name='Image')
         # self.norm_mean = mean
         # self.norm_std = std
 
     def to_tensor(self):
+        """
+        Convert tensor to tensor.
+
+        Args:
+            self: (todo): write your description
+        """
         if isinstance(self.data, np.ndarray):
             # handle numpy array
             img = torch.from_numpy(self.data)
@@ -82,15 +160,36 @@ class InputImage(Representation):
         self.set_data(img)
 
     def shape(self):
+        """
+        Returns the shape of the data.
+
+        Args:
+            self: (todo): write your description
+        """
         return (self.data).size
 
     def rotate(self, angle, cval=0):
+        """
+        Rotate the image by angle.
+
+        Args:
+            self: (todo): write your description
+            angle: (float): write your description
+            cval: (int): write your description
+        """
         tmp = self.data.copy()
         tmp = np.array(tmp)
         tmp = scp_rotate(tmp, angle, reshape=False, order=0, mode='constant', cval=cval, prefilter=False)
         self.data = Image.fromarray(tmp)
 
     def scale(self, ratio):
+        """
+        Scale the image.
+
+        Args:
+            self: (todo): write your description
+            ratio: (todo): write your description
+        """
         w, h = self.shape()
         tw = int(ratio * w)
         th = int(ratio * h)
@@ -103,15 +202,46 @@ class InputImage(Representation):
         self.data = (self.data).resize((tw, th), interpolation)
 
     def fliplr(self):
+        """
+        Fliplens the image.
+
+        Args:
+            self: (todo): write your description
+        """
         self.data = (self.data).transpose(Image.FLIP_LEFT_RIGHT)
 
     def crop(self, x1, y1, tw, th):
+        """
+        Crop the image.
+
+        Args:
+            self: (todo): write your description
+            x1: (array): write your description
+            y1: (array): write your description
+            tw: (array): write your description
+            th: (array): write your description
+        """
         self.data = self.data.crop((x1, y1, x1 + tw, y1 + th))
 
     def gamma(self, gamma_ratio):
+        """
+        Adjust the gamma function.
+
+        Args:
+            self: (todo): write your description
+            gamma_ratio: (todo): write your description
+        """
         self.data = TF.adjust_gamma(self.data, gamma_ratio, gain=1)
 
     def normalize(self, mean, std):
+        """
+        Normalize the image.
+
+        Args:
+            self: (todo): write your description
+            mean: (todo): write your description
+            std: (todo): write your description
+        """
         mean = torch.FloatTensor(mean)
         std = torch.FloatTensor(std)
 
@@ -137,12 +267,26 @@ class Normals(Representation):
     """
 
     def __init__(self, data):
+        """
+        Initialize data.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+        """
         super(Normals, self).__init__(data=data, name='normals')
         # normalize normals
         n = np.linalg.norm(self.data, 2, axis=2)
         self.data = self.data / (np.expand_dims(n, axis=2).clip(1e-4))
 
     def scale(self, ratio):
+        """
+        Scale the data.
+
+        Args:
+            self: (todo): write your description
+            ratio: (todo): write your description
+        """
         # transform normals
         super(Normals, self).scale(ratio, interpolation='NEAREST')
         self.data[..., 2] *= ratio
@@ -150,6 +294,14 @@ class Normals(Representation):
         self.data = self.data / (np.expand_dims(norm, axis=2).clip(1e-4))
 
     def rotate(self, angle, cval=0):
+        """
+        Rotate the image about angle angle angle.
+
+        Args:
+            self: (todo): write your description
+            angle: (float): write your description
+            cval: (int): write your description
+        """
         # rotating around Z axis does not affect Z normal
         rad_angle = np.deg2rad(angle)
         cos_angle = np.cos(rad_angle)
@@ -162,13 +314,35 @@ class Normals(Representation):
         self.data = scp_rotate(self.data, angle, reshape=False, order=0, mode='wrap', prefilter=False)
 
     def crop(self, x1, y1, tw, th):
+        """
+        Crop the image.
+
+        Args:
+            self: (todo): write your description
+            x1: (array): write your description
+            y1: (array): write your description
+            tw: (array): write your description
+            th: (array): write your description
+        """
         self.data = self.data[y1:y1 + th, x1:x1 + tw, :]
 
     def fliplr(self):
+        """
+        Fliplens the data.
+
+        Args:
+            self: (todo): write your description
+        """
         self.data = np.fliplr(self.data)
         self.data[..., 0] = -1.0 * self.data[..., 0]
 
     def to_tensor(self):
+        """
+        Convert tensor to tensor.
+
+        Args:
+            self: (todo): write your description
+        """
         self.data = torch.FloatTensor(np.array((self.data).swapaxes(1, 2).swapaxes(0, 1), dtype=np.float32))
 
 
@@ -178,13 +352,33 @@ class Depth(Representation):
     """
 
     def __init__(self, data):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+        """
         super(Depth, self).__init__(data=data, name='depth')
 
     def scale(self, ratio):
+        """
+        Scale the ratio.
+
+        Args:
+            self: (todo): write your description
+            ratio: (todo): write your description
+        """
         super(Depth, self).scale(ratio, interpolation='NEAREST')
         self.data = self.data / ratio
 
     def to_tensor(self):
+        """
+        Convert tensor.
+
+        Args:
+            self: (todo): write your description
+        """
         self.data = torch.FloatTensor(np.array(self.data, dtype=np.float32))
 
 
@@ -194,9 +388,24 @@ class Contours(Representation):
     """
 
     def __init__(self, data):
+        """
+        Initialize data.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+        """
         super(Contours, self).__init__(data=data, name='contours')
 
     def scale(self, ratio, interpolation='LINEAR'):
+        """
+        Scale the image
+
+        Args:
+            self: (todo): write your description
+            ratio: (todo): write your description
+            interpolation: (int): write your description
+        """
         h, w = self.data.shape[:2]
         tw = int(ratio * w)
         th = int(ratio * h)
@@ -219,8 +428,23 @@ class Mask(Representation):
     """
 
     def __init__(self, data):
+        """
+        Initialize data.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+        """
         super(Mask, self).__init__(data=data, name='mask')
 
     def rotate(self, angle, cval=0):
+        """
+        Rotate the image.
+
+        Args:
+            self: (todo): write your description
+            angle: (float): write your description
+            cval: (int): write your description
+        """
         self.data = scp_rotate(self.data, angle, reshape=False, order=0, mode='constant', cval=cval, prefilter=False)
 

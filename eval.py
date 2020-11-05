@@ -42,6 +42,13 @@ args = parser.parse_args()
 
 
 def predict_depth(model, image):
+    """
+    Predict depth of a model.
+
+    Args:
+        model: (todo): write your description
+        image: (array): write your description
+    """
 
     start_time = time.time()
     depth_pred = model(image)
@@ -51,6 +58,14 @@ def predict_depth(model, image):
 
 
 def compute_depth_metrics(input, target, mask=None):
+    """
+    R calculate the depth of a metric.
+
+    Args:
+        input: (todo): write your description
+        target: (todo): write your description
+        mask: (array): write your description
+    """
     if mask is None:
         rmse = np.sqrt(np.mean((input - target) ** 2))
         rmse_log = np.sqrt(np.mean(np.log10(np.clip(input, a_min=1e-12, a_max=1e12)) - np.log10(
@@ -103,6 +118,16 @@ def compute_depth_metrics(input, target, mask=None):
 
 
 def compute_depth_boundary_error(edges_gt, pred, mask=None, low_thresh=0.15, high_thresh=0.3):
+    """
+    Compute the depth - first and - depth.
+
+    Args:
+        edges_gt: (todo): write your description
+        pred: (array): write your description
+        mask: (array): write your description
+        low_thresh: (float): write your description
+        high_thresh: (float): write your description
+    """
     # skip dbe if there is no ground truth distinct edge
     if np.sum(edges_gt) == 0:
         dbe_acc = np.nan
@@ -217,6 +242,13 @@ for i, idx in enumerate(nyu_splits['testNdxs']):
 
 
 def round_down(num, divisor):
+    """
+    Round a number to the given number.
+
+    Args:
+        num: (int): write your description
+        divisor: (todo): write your description
+    """
     return num - (num % divisor)
 
 
