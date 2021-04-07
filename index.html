@@ -144,12 +144,12 @@
 				<tr>
 					<td align=center width=100px>
 						<center>
-							<span style="font-size:24px"><a href="https://michaelramamonjisoa.github.io">Micha\"el Ramamonjisoa</a></span>
+							<span style="font-size:24px"><a href="https://michaelramamonjisoa.github.io">Michaël Ramamonjisoa</a></span>
 						</center>
 					</td>
 					<td align=center width=100px>
 						<center>
-							<span style="font-size:24px"><a href="https://en.wikipedia.org/wiki/James_J._Gibson">Vincent Lepetit</a></span>
+							<span style="font-size:24px"><a href="http://imagine.enpc.fr/~lepetitv/">Vincent Lepetit</a></span>
 						</center>
 					</td>					
 				</tr>
@@ -181,13 +181,6 @@
 				</td>
 			</tr>
 		</table>
-		<table align=center width=850px>
-			<tr>
-				<td>
-					This was a template originally made for <a href="http://richzhang.github.io/colorization/">Colorful Image Colorization</a>. The code can be found in this <a href="https://github.com/richzhang/webpage-template">repository</a>.
-				</td>
-			</tr>
-		</table>
 	</center>
 
 	<hr>
@@ -196,12 +189,13 @@
 		<center><h1>Abstract</h1></center>
 		<tr>
 			<td>
-				This is my abstract.
+We introduce SharpNet, a method that predicts an accurate depth map given a single input color image, with a particular attention to the reconstruction of occluding contours: Occluding contours are an important cue for object recognition, and for realistic integration of virtual objects in Augmented Reality, but they are also notoriously difficult to reconstruct accurately. For example, they are a challenge for stereo-based reconstruction methods, as points around an occluding contour are only visible in one of the two views. Inspired by recent methods that introduce normal estimation to improve depth prediction, we introduce novel terms to constrain normals, depth and occluding contours predictions. Since ground truth depth is difficult to obtain with pixel-perfect accuracy along occluding contours, we use synthetic images for training, followed by fine-tuning on real data. We demonstrate 	our approach on the challenging NYUv2-Depth dataset, and show that our method outperforms the state-of-the-art along occluding contours, while performing on par with the best recent methods for the rest of the images. Its accuracy along the occluding contours is actually better than the “ground truth” acquired by a depth camera based on structured light. We show this by introducing a new benchmark based on NYUv2-Depth for evaluating occluding contours in monocular reconstruction, which is our second contribution.
 			</td>
 		</tr>
 	</table>
 	<br>
 
+	<!--
 	<hr>
 	<center><h1>Talk</h1></center>
 	<p align="center">
@@ -216,7 +210,8 @@
 				</span>
 			</center>
 		</tr>
-	</table>
+	</table> 
+	-->
 	<hr>
 
 	<center><h1>Code</h1></center>
@@ -288,7 +283,7 @@
 			<td width=400px>
 				<left>
 					<center><h1>Acknowledgements</h1></center>
-					This template was originally made by <a href="http://web.mit.edu/phillipi/">Phillip Isola</a> and <a href="http://richzhang.github.io/">Richard Zhang</a> for a <a href="http://richzhang.github.io/colorization/">colorful</a> ECCV project; the code can be found <a href="https://github.com/richzhang/webpage-template">here</a>.
+					This webpage template was borrowed from some <a href="http://richzhang.github.io/colorization">colorful folks.</a>.				
 				</left>
 			</td>
 		</tr>
