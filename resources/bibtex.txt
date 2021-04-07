@@ -1,0 +1,6 @@
+@article{ramamonjisoa2019sharpnet,
+    Title = {SharpNet: Fast and Accurate Recovery of Occluding Contours in Monocular Depth Estimation},
+    Author = {Michael Ramamonjisoa and Vincent Lepetit},
+    Journal = {The IEEE International Conference on Computer Vision (ICCV) Workshops},
+    Year = {2019}
+}
